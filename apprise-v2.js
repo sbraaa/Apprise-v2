@@ -165,7 +165,8 @@ function Apprise(text, options) {
 				// add group's radios
 				sub_container += '<div style="float:rigth;">';
 				jQuery.each(radio_group.radios, function(b, radio) {
-					sub_container += '<input type="radio" id="apprise-radio-' + radio.id + '" name="apprise-radio-'+i+'">&nbsp;<label for="apprise-radio-' + radio.id + '" ><span></span>' + radio.text + '</label>';
+					var checked = (radio.checked ?'checked' : '');
+					sub_container += '<input type="radio" id="apprise-radio-' + radio.id + '" name="apprise-radio-'+i+'" '+checked+' >&nbsp;<label for="apprise-radio-' + radio.id + '" ><span></span>' + radio.text + '</label>';
 				});
 				sub_container += '</div>';
 
