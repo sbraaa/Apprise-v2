@@ -73,6 +73,11 @@ div.apprise .apprise-radios {
 		-webkit-box-shadow: inset 0px 1px 0px #fff;
 	padding: 10px 20px;
 	text-align: right;
+	overflow: hidden;
+}
+
+div.apprise .apprise-radios-sub-container {
+	margin-bottom: 10px;
 }
 
 div.apprise .apprise-buttons button {

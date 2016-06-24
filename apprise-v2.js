@@ -1,12 +1,12 @@
 /***
  *
- * Apprise v2.5 - Sgarbossa Domenico
+ * Apprise v2.5.3 - Sgarbossa Domenico
  *
  * Custom version of original Apprise v2 from Daniel Raftery
  *
  * New features
  * - added support for textarea
- * - added support for radio buttons
+ * - added support for radio buttons e group of radio buttons
  * - added support for attributes on buttons
  * - added support for locking Enter key (useful when editing textarea)
  */
@@ -40,8 +40,8 @@ function Apprise(text, options) {
 	// Necessary variables
 	var $me = this,
 			$_inner = jQuery('<div class="apprise-inner">'),
+			$_radios_container = jQuery('<div class="apprise-radios" style="display: none;">'),
 			$_buttons = jQuery('<div class="apprise-buttons">'),
-			$_radios = jQuery('<div class="apprise-radios" style="display: none;">'),
 			$_input = jQuery('<input type="text">');
 
 	// Default settings (edit these to your liking)
@@ -61,7 +61,8 @@ function Apprise(text, options) {
 		input: false, // input dialog
 		textarea : false,
 		override: true, // Override browser navigation while Apprise is visible
-		enableEnter: true
+		enableEnter: true,
+		radio_groups : false
 	};
 
 	// Merge settings with options
@@ -150,6 +151,33 @@ function Apprise(text, options) {
 		});
 	};
 
+	// add radios groups
+	jQuery.each(settings.radio_groups, function(i, radio_group) {
+		if(radio_group) {
+			var sub_container = '';
+			var group_title = (radio_group.title ? radio_group.title : '');
+			if (Object.keys(radio_group.radios).length) {
+				sub_container = '<div class="apprise-radios-sub-container">';
+
+				// add section title
+				sub_container += '<div style="float:left;"><span>'+group_title+'</span></div>';
+
+				// add group's radios
+				sub_container += '<div style="float:rigth;">';
+				jQuery.each(radio_group.radios, function(b, radio) {
+					sub_container += '<input type="radio" id="apprise-radio-' + radio.id + '" name="apprise-radio-'+i+'">&nbsp;<label for="apprise-radio-' + radio.id + '" ><span></span>' + radio.text + '</label>';
+				});
+				sub_container += '</div>';
+
+				sub_container += '</div>';
+			}
+
+			// Add to radios group
+			$_radios_container.css('display','block');
+			$_radios_container.append(sub_container);
+		}
+	});
+
 	// Add buttons
 	jQuery.each(settings.buttons, function(i, button) {
 
@@ -186,28 +214,6 @@ function Apprise(text, options) {
 		}
 	});
 
-	// add radios
-	if (settings.radios) {
-		jQuery.each(settings.radios, function(i, radio) {
-			// Create radios
-			var $_radio = jQuery('<input type="radio" id="apprise-radio-' + radio.id + '" name="apprise-radio">&nbsp;<label for="apprise-radio-' + radio.id + '" ><span></span>' + radio.text + '</label>');
-
-			// Add custom class names
-			if(radio.className) {
-				$_radio.addClass(radio.className);
-			}
-
-			// add custom attr
-			if (radio.attrName && radio.attrVal) {
-				$_radio.attr(radio.attrName, radio.attrVal);
-			}
-
-			// Add to radios
-			$_radios.css('display','block');
-			$_radios.append($_radio);
-		});
-	}
-
 	// Disabled browser actions while open
 	if(settings.override) {
 		$window.bind('beforeunload', function(e){
@@ -221,7 +227,7 @@ function Apprise(text, options) {
 	$window.resize( function() { $me.adjustWidth() } );
 
 	// Append elements, show Apprise
-	$Apprise.html('').append( $_inner.append('<div class="apprise-content">' + text + '</div>') ).append($_buttons).append($_radios);
+	$Apprise.html('').append( $_inner.append('<div class="apprise-content">' + text + '</div>') ).append($_radios_container).append($_buttons);
 	$cA = this;
 
 	if(settings.input) {
