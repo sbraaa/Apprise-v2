@@ -24,6 +24,7 @@ div.apprise {
 	position: fixed;
 	top: -100%;
 	width: 20%;
+	z-index: 999;
 }
 
 div.apprise .apprise-inner {
