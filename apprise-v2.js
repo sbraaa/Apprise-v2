@@ -48,6 +48,7 @@ function Apprise(text, options) {
 	var settings = {
 
 		animation: 700,	// Animation speed
+		width: 'auto', // custom width in %
 		buttons: {
 			confirm: {
 				action: function() { $me.dissapear(); }, // Callback function
@@ -95,6 +96,13 @@ function Apprise(text, options) {
 			w = "50%", l = "25%";
 		} else if(window_width <= 2200 && window_width > 1800) {
 			w = "30%", l = "35%";
+		}
+
+		// custom width
+		if(settings.width!='auto' && parseInt(settings.width))
+		{
+			w = parseInt(settings.width)+"%";
+			l = Math.floor((100 - parseInt(settings.width)) / 2)+"%";
 		}
 
 		$Apprise.css('width', w).css('left', l);
