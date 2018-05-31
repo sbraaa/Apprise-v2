@@ -28,7 +28,8 @@ div.apprise {
 }
 
 div.apprise .apprise-inner {
-	padding: 20px;
+	padding: 20px;    
+    max-height: 600px;
 }
 
 div.apprise .apprise-input {
@@ -96,6 +97,7 @@ div.apprise .apprise-buttons button {
 	overflow: hidden;
 	padding: 5px 12px;
 	text-shadow: 0px 1px 0px rgba(255,255,255,0.8);
+	min-width: 100px;
 }
 
 div.apprise .apprise-buttons button.blue {
@@ -106,9 +108,16 @@ div.apprise .apprise-buttons button.red {
 	background: #D23A30;
 }
 
-div.apprise .apprise-buttons button.blue, div.apprise .apprise-buttons button.red {
+div.apprise .apprise-buttons button.green {
+	background: #009900;
+}
+
+div.apprise .apprise-buttons button.blue,
+div.apprise .apprise-buttons button.red,
+div.apprise .apprise-buttons button.green {
 	color: #fff;
 	text-shadow: 0px -1px 0px rgba(0,0,0,0.4);
+	min-width: 100px;
 }
 
 div.apprise .apprise-buttons button:hover {
@@ -121,4 +130,12 @@ div.apprise .apprise-buttons button:active {
 	box-shadow: inset 0px 1px 2px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,0.8);
 		-moz-box-shadow: inset 0px 1px 2px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,0.8);
 		-webkit-box-shadow: inset 0px 1px 2px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,0.8);
+}
+
+/* serve a sovrascrive l'impostazione base che va bene su tutto il gestionale ma non su apprise! */
+div.apprise input[type="radio"] + label span:before {
+	margin: 0px !important;
+}
+div.apprise input[type="radio"] + label span {
+    margin: 0px 3px 2px 3px !important;
 }
