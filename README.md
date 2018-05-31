@@ -33,5 +33,12 @@ Some new features:
 
 
 - added support for locking Enter key (useful when editing textarea)
-> enableEnter: true,
+> enable_Enter: true
+
+- added support for scrollable contents
+> scrollable_content: false
+
+- added buttons inline display mode and buttons min height parameter
+> buttons_inline: false
+> buttons_inline_min_height: 30
 
