@@ -19,7 +19,7 @@ div.apprise {
 	font-family: Arial, sans-serif;
 	font-size: 14px;
 	left: 40%;
-	max-height: 90%;
+	max-height: 85vh;
 	overflow: hidden;
 	position: fixed;
 	top: -100%;
@@ -28,8 +28,8 @@ div.apprise {
 }
 
 div.apprise .apprise-inner {
-	padding: 20px;    
-    max-height: 600px;
+	padding: 20px;
+    max-height: 70vh;
 }
 
 div.apprise .apprise-input {
