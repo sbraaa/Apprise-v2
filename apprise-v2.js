@@ -1,6 +1,6 @@
 /***
  *
- * Apprise v2.5.8 - 2023-01-12 - Sgarbossa Domenico
+ * Apprise v2.5.9 - 2024-05-10 - Sgarbossa Domenico
  *
  * Custom version of original Apprise v2 from Daniel Raftery
  *
@@ -12,6 +12,7 @@
  * - added support for scrollable contents
  * - added support for buttons inline mode
  * - added restore focused element after closing
+ * - added runOnClose optional function
  */
 
 // Global Apprise variables
@@ -69,7 +70,8 @@ function Apprise(text, options) {
 		radio_groups: false,
 		scrollable_content: false,
 		buttons_inline: false,
-		buttons_inline_min_height: 30
+		buttons_inline_min_height: 30,
+		runOnClose: null,
 	};
 
 	// Merge settings with options
@@ -105,30 +107,29 @@ function Apprise(text, options) {
 
 		// custom width
 		if (settings.width != "auto" && parseInt(settings.width)) {
-
 			w = parseInt(settings.width) + "%";
 			l = Math.floor((100 - parseInt(settings.width)) / 2) + "%";
-		}
-		else if (settings.width.indexOf('custpx') >= 0) {
-
+		} else if (settings.width.indexOf('custpx') >= 0) {
 			var custom_width_apprise = settings.width.replace('custpx_', '');
 			settings.width = custom_width_apprise;
 			w = parseInt(settings.width) + "px";
-			// l = Math.floor((100 - parseInt(settings.width)) / 2) + "%";
 			calculate_left = 50;
-			if (custom_width_apprise < jQuery(window).width())
+			if (custom_width_apprise < jQuery(window).width()) {
 				var calculate_left = (jQuery(window).width() - custom_width_apprise) / 2;
-
+			}
 			l = Math.floor(calculate_left) + "px";
 		}
-
 		$Apprise.css("width", w).css("left", l);
 	};
 
 	// Close function
 	this.dissapear = function () {
 		$Apprise.animate({ top: "-100%" }, settings.animation, function () {
-			$overlay.fadeOut(300);
+			$overlay.fadeOut(300, () => {
+				if (typeof settings.runOnClose === 'function') {
+					settings.runOnClose();
+				}
+			});
 			$Apprise.hide();
 
 			// Unbind window listeners
@@ -144,8 +145,7 @@ function Apprise(text, options) {
 			if (lastFocus) {
 				lastFocus.focus();
 			}
-		}
-		);
+		});
 		return;
 	};
 
@@ -180,33 +180,15 @@ function Apprise(text, options) {
 			var group_title = radio_group.title ? radio_group.title : "";
 			if (Object.keys(radio_group.radios).length) {
 				sub_container = '<div class="apprise-radios-sub-container">';
-
 				// add section title
-				sub_container +=
-					'<div style="float:left; text-align: left;"><span>' +
-					group_title +
-					"</span></div>";
-
+				sub_container += '<div style="float:left; text-align: left;"><span>' + group_title + "</span></div>";
 				// add group's radios
 				sub_container += '<div style="float:rigth;">';
 				jQuery.each(radio_group.radios, function (b, radio) {
-					var checked = radio.checked ? "checked" : "";
-					sub_container +=
-						'<input type="radio" id="apprise-radio-' +
-						radio.id +
-						'" name="apprise-radio-' +
-						i +
-						'" ' +
-						checked +
-						' >&nbsp;<label for="apprise-radio-' +
-						radio.id +
-						'" ><span></span>' +
-						radio.text +
-						"</label>";
+					sub_container += '<input type="radio" id="apprise-radio-' + radio.id + '" name="apprise-radio-' + i + '" ' + (radio.checked ? 'checked' : '')
+						+ ' >&nbsp;<label for="apprise-radio-' + radio.id + '" ><span></span>' + radio.text + "</label>";
 				});
-				sub_container += "</div>";
-
-				sub_container += "</div>";
+				sub_container += "</div></div>";
 			}
 
 			// Add to radios group
@@ -268,11 +250,7 @@ function Apprise(text, options) {
 	lastFocus = document.activeElement;
 
 	// Append elements, show Apprise
-	$Apprise
-		.html("")
-		.append($_inner.append('<div class="apprise-content">' + text + "</div>"))
-		.append($_radios_container)
-		.append($_buttons);
+	$Apprise.html("").append($_inner.append('<div class="apprise-content">' + text + "</div>")).append($_radios_container).append($_buttons);
 	$cA = this;
 
 	if (settings.input) {
@@ -308,6 +286,7 @@ function Apprise(text, options) {
 
 	$overlay.fadeIn(300);
 	$Apprise.show().animate({ top: "10%" }, settings.animation, function () { $me.keyPress(); });
+	parent.window.appriseActive = true;
 
 	// attivo contenuto scrollabile
 	if (settings.scrollable_content) {
