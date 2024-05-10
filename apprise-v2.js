@@ -12,7 +12,7 @@
  * - added support for scrollable contents
  * - added support for buttons inline mode
  * - added restore focused element after closing
- * - added runOnClose optional function
+ * - added runOnClose optional function (for default and specific 'close' action)
  */
 
 // Global Apprise variables
@@ -79,7 +79,7 @@ function Apprise(text, options) {
 
 	// Close current Apprise, exit
 	if (text == "close") {
-		$cA.dissapear();
+		$cA.dissapear(options);
 		return;
 	}
 
@@ -123,7 +123,12 @@ function Apprise(text, options) {
 	};
 
 	// Close function
-	this.dissapear = function () {
+	this.dissapear = function (runOnClose) {
+
+		if (typeof runOnClose === 'function') {
+			settings.runOnClose = runOnClose;
+		}
+
 		$Apprise.animate({ top: "-100%" }, settings.animation, function () {
 			$overlay.fadeOut(300, () => {
 				if (typeof settings.runOnClose === 'function') {
